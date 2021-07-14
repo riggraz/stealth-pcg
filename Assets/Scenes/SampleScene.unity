@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tile: {fileID: 3661510819142552997, guid: 496c5cba100a84ed4a121eea0923ba61, type: 3}
+  startPoint: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}
+  endPoint: {fileID: 1904505140815359100, guid: 385ee523713b14b2ab5d014cc6f8264f, type: 3}
 --- !u!4 &651523084
 Transform:
   m_ObjectHideFlags: 0
