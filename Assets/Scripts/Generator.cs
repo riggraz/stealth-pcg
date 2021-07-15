@@ -47,17 +47,29 @@ public class Generator : MonoBehaviour
     {
         enemies = new List<Enemy>();
 
-        FixedEnemyFactory fixedEnemyFactory = new FixedEnemyFactory();
+        IEnemyFactory[] enemyFactories = new IEnemyFactory[]
+        {
+            new FixedEnemyFactory(),
+            new Rotating90EnemyFactory()
+        };
+
+        //IEnemyFactory currentFactory = new Rotating90EnemyFactory();
+        //int nOfEnemies = 1;
 
         int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 50f) + 1;
-        //int nOfEnemies = 1;
-        Debug.Log("# of enemies = " + nOfEnemies);
 
         for (int i = 0; i < nOfEnemies; i++)
         {
-            Enemy enemy = fixedEnemyFactory.GenerateEnemy(map, enemies);
-            if (enemy == null) Debug.Log("Enemy could not be created.");
-            else enemies.Add(enemy);
+            int factoryToUse = Random.Range(0, enemyFactories.Length);
+            Enemy enemy = enemyFactories[factoryToUse].GenerateEnemy(map, enemies);
+
+            if (enemy == null)
+            {
+                Debug.Log("Enemy could not be created.");
+                continue;
+            }
+
+            enemies.Add(enemy);
         }
     }
 }

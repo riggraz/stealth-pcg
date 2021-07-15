@@ -8,6 +8,10 @@ public class FixedEnemyFactory : IEnemyFactory
     public Enemy GenerateEnemy(Map map, List<Enemy> enemies)
     {
         Vector2Int position = EnemyFactoryUtility.GetRandomAvailablePosition(map, enemies, 0);
+
+        // no positions available => enemy creation aborted => return null
+        if (position.x == -1) return null;
+
         int rotation = EnemyFactoryUtility.GetRotation(map, position);
         int visionLength = EnemyFactoryUtility.GetVisionLength();
 
@@ -17,9 +21,6 @@ public class FixedEnemyFactory : IEnemyFactory
             Rotation = rotation,
             VisionLength = visionLength
         };
-
-        // return status -1 = enemy cannot be created => we return null
-        if (enemyState.Position.x == -1) return null;
 
         List<EnemyState> pattern = new List<EnemyState> { enemyState };
         Enemy enemy = new Enemy(pattern);

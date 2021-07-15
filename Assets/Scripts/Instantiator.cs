@@ -6,17 +6,22 @@ public class Instantiator : MonoBehaviour
     public GameObject tileGameObject;
     public GameObject startPointGameObject, endPointGameObject;
     public GameObject enemyGameObject;
+    public Orchestrator orchestrator;
 
     private Map map;
     private List<Enemy> enemies;
+    private List<GameObject> enemiesGameObjects;
 
     public void InstantiateLevel(Map map, List<Enemy> enemies)
     {
         this.map = map;
         this.enemies = enemies;
+        this.enemiesGameObjects = new List<GameObject>();
 
         InstantiateMap();
         InstantiateEnemies();
+
+        orchestrator.StartOrchestrating(enemies, enemiesGameObjects);
     }
 
     // Instantiate an MxN map + a border of thickness 1 around it
@@ -50,9 +55,12 @@ public class Instantiator : MonoBehaviour
                 Quaternion.AngleAxis(e.Pattern[0].Rotation, Vector3.up)
             );
 
-            Transform enemyT = enemy.transform.GetChild(0);
-            enemyT.localScale = new Vector3(0.75f, 0.75f, e.Pattern[0].VisionLength);
-            enemyT.localPosition = new Vector3(0, 0, -0.5f - e.Pattern[0].VisionLength / 2f);
+            // Adjust vision range of enemy
+            Transform enemyVision = enemy.transform.GetChild(0);
+            enemyVision.localScale = new Vector3(0.75f, 0.75f, e.Pattern[0].VisionLength);
+            enemyVision.localPosition = new Vector3(0, 0, -0.5f - e.Pattern[0].VisionLength / 2f);
+
+            enemiesGameObjects.Add(enemy);
         }
     }
 
