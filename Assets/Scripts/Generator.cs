@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Generator : MonoBehaviour
@@ -5,37 +6,58 @@ public class Generator : MonoBehaviour
     public int minSize, maxSize;
     public Instantiator instantiator;
 
-    private int M; // rows
-    private int N; // columns
-
-    private int startPointX;
-    private int endPointX;
+    private Map map;
+    private List<Enemy> enemies;
 
     void Start() { GenerateLevel(); }
 
     void GenerateLevel()
     {
-        DrawLevelSize();
-        DrawStartAndEndPoints();
+        GenerateMap();
+        GenerateEnemies();
 
-        instantiator.InstantiateLevel(M, N, startPointX, endPointX);
+        instantiator.InstantiateLevel(map, enemies);
     }
 
-    // Draw M and N such that they are in range [minSize, maxSize] and M >= N
-    void DrawLevelSize()
+    // Randomly draws M and N such that they are in range [minSize, maxSize] and M >= N
+    // Randomly draws x-coordinate of start and end points
+    // (their z-coordinate is always 0 and M-1 respectively)
+    void GenerateMap()
     {
+        map = new Map();
+
         int maxDiffBetweenDims = 5; // max difference in size between M and N
 
-        N = Random.Range(minSize, maxSize + 1);
-        M = N + Random.Range(0, maxDiffBetweenDims + 1);
+        int N = Random.Range(minSize, maxSize + 1);
+        int M = N + Random.Range(0, maxDiffBetweenDims + 1);
         M = Mathf.Clamp(M, N, maxSize);
+
+        int startPointX = Random.Range(0, N);
+        int endPointX = Random.Range(0, N);
+
+        map.M = M;
+        map.N = N;
+        map.StartPoint = new Vector2Int(startPointX, 0);
+        map.EndPoint = new Vector2Int(endPointX, map.M - 1);
+
+        Debug.Log("Map: M=" + map.M + ", N=" + map.N + ", start=" + map.StartPoint + ", end=" + map.EndPoint);
     }
 
-    // Draw x-coordinate of start and end points (their z-coordinate is always
-    // 0 and M-1 respectively)
-    void DrawStartAndEndPoints()
+    void GenerateEnemies()
     {
-        startPointX = Random.Range(0, N);
-        endPointX = Random.Range(0, N);
+        enemies = new List<Enemy>();
+
+        FixedEnemyFactory fixedEnemyFactory = new FixedEnemyFactory();
+
+        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 50f) + 1;
+        //int nOfEnemies = 1;
+        Debug.Log("# of enemies = " + nOfEnemies);
+
+        for (int i = 0; i < nOfEnemies; i++)
+        {
+            Enemy enemy = fixedEnemyFactory.GenerateEnemy(map, enemies);
+            if (enemy == null) Debug.Log("Enemy could not be created.");
+            else enemies.Add(enemy);
+        }
     }
 }

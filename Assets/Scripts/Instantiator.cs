@@ -1,43 +1,63 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Instantiator : MonoBehaviour
 {
-    public GameObject tile;
-    public GameObject startPoint, endPoint;
+    public GameObject tileGameObject;
+    public GameObject startPointGameObject, endPointGameObject;
+    public GameObject enemyGameObject;
 
-    private int M, N;
-    private Vector3Int startPointPos, endPointPos;
+    private Map map;
+    private List<Enemy> enemies;
 
-    public void InstantiateLevel(int M, int N, int startPointX, int endPointX)
+    public void InstantiateLevel(Map map, List<Enemy> enemies)
     {
-        this.M = M;
-        this.N = N;
-        this.startPointPos = new Vector3Int(startPointX, 1, 0);
-        this.endPointPos = new Vector3Int(endPointX, 1, M - 1);
+        this.map = map;
+        this.enemies = enemies;
 
         InstantiateMap();
+        InstantiateEnemies();
     }
 
     // Instantiate an MxN map + a border of thickness 1 around it
     // Also places start and end points
     void InstantiateMap()
     {
-        Debug.Log("Map: M=" + M + ", N=" + N + ", start=" + startPointPos + ", end=" + endPointPos);
+        GameObject mapGameObject = new GameObject("Map");
 
-        GameObject map = new GameObject("Map");
-
-        for (int i = -1; i <= M; i++)
+        for (int i = -1; i <= map.M; i++)
         {
-            for (int j = -1; j <= N; j++)
+            for (int j = -1; j <= map.N; j++)
             {
-                Instantiate(tile, new Vector3Int(j, 0, i), Quaternion.identity, map.transform);
+                Instantiate(tileGameObject, new Vector3Int(j, 0, i), Quaternion.identity, mapGameObject.transform);
 
-                if (i == -1 || j == -1 || i == M || j == N)
-                    Instantiate(tile, new Vector3Int(j, 1, i), Quaternion.identity, map.transform);
+                if (i == -1 || j == -1 || i == map.M || j == map.N)
+                    Instantiate(tileGameObject, new Vector3Int(j, 1, i), Quaternion.identity, mapGameObject.transform);
             }
         }
 
-        Instantiate(startPoint, startPointPos, Quaternion.identity);
-        Instantiate(endPoint, endPointPos, Quaternion.identity);
+        Instantiate(startPointGameObject, To3DVect(map.StartPoint, 1), Quaternion.identity);
+        Instantiate(endPointGameObject, To3DVect(map.EndPoint, 1), Quaternion.identity);
+    }
+
+    void InstantiateEnemies()
+    {
+        foreach(Enemy e in enemies)
+        {
+            GameObject enemy = Instantiate(
+                enemyGameObject,
+                To3DVect(e.Pattern[0].Position, 1),
+                Quaternion.AngleAxis(e.Pattern[0].Rotation, Vector3.up)
+            );
+
+            Transform enemyT = enemy.transform.GetChild(0);
+            enemyT.localScale = new Vector3(0.75f, 0.75f, e.Pattern[0].VisionLength);
+            enemyT.localPosition = new Vector3(0, 0, -0.5f - e.Pattern[0].VisionLength / 2f);
+        }
+    }
+
+    private Vector3Int To3DVect(Vector2Int v, int thirdDim = 0)
+    {
+        return new Vector3Int(v.x, thirdDim, v.y);
     }
 }

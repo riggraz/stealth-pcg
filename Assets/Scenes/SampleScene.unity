@@ -152,9 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28927f38371334d71b30f62bb89537b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: {fileID: 3661510819142552997, guid: 496c5cba100a84ed4a121eea0923ba61, type: 3}
-  startPoint: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}
-  endPoint: {fileID: 1904505140815359100, guid: 385ee523713b14b2ab5d014cc6f8264f, type: 3}
+  tileGameObject: {fileID: 3661510819142552997, guid: 496c5cba100a84ed4a121eea0923ba61, type: 3}
+  startPointGameObject: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}
+  endPointGameObject: {fileID: 1904505140815359100, guid: 385ee523713b14b2ab5d014cc6f8264f, type: 3}
+  enemyGameObject: {fileID: 2403109219315996895, guid: bf8a5ec72018141dc8b231e7985f9b78, type: 3}
 --- !u!4 &651523084
 Transform:
   m_ObjectHideFlags: 0
@@ -198,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcffc4256d4c7442bbd896262e5ba93d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSize: 5
+  minSize: 10
   maxSize: 15
   instantiator: {fileID: 651523083}
 --- !u!4 &658854603
