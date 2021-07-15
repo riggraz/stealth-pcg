@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileGameObject: {fileID: 3661510819142552997, guid: 496c5cba100a84ed4a121eea0923ba61, type: 3}
+  wallGameObject: {fileID: 2633092757827695146, guid: 77e241edd847a436e83c352c44a73d34, type: 3}
   startPointGameObject: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}
   endPointGameObject: {fileID: 1904505140815359100, guid: 385ee523713b14b2ab5d014cc6f8264f, type: 3}
   enemyGameObject: {fileID: 2403109219315996895, guid: bf8a5ec72018141dc8b231e7985f9b78, type: 3}

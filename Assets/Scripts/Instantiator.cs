@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Instantiator : MonoBehaviour
 {
-    public GameObject tileGameObject;
+    public GameObject tileGameObject, wallGameObject;
     public GameObject startPointGameObject, endPointGameObject;
     public GameObject enemyGameObject;
     public Orchestrator orchestrator;
@@ -37,7 +37,7 @@ public class Instantiator : MonoBehaviour
                 Instantiate(tileGameObject, new Vector3Int(j, 0, i), Quaternion.identity, mapGameObject.transform);
 
                 if (i == -1 || j == -1 || i == map.M || j == map.N)
-                    Instantiate(tileGameObject, new Vector3Int(j, 1, i), Quaternion.identity, mapGameObject.transform);
+                    Instantiate(wallGameObject, new Vector3Int(j, 1, i), Quaternion.identity, mapGameObject.transform);
             }
         }
 
