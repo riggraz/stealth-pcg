@@ -16,6 +16,9 @@ public class Generator : MonoBehaviour
         GenerateMap();
         GenerateEnemies();
 
+        bool solvable = Verifier.VerifyLevel(map, enemies);
+        Debug.Log("LevelSolvable=" + solvable);
+
         instantiator.InstantiateLevel(map, enemies);
     }
 
@@ -53,14 +56,15 @@ public class Generator : MonoBehaviour
             new Rotating90EnemyFactory()
         };
 
-        //IEnemyFactory currentFactory = new Rotating90EnemyFactory();
-        //int nOfEnemies = 1;
+        //int factoryToUse = 0;
+        //int nOfEnemies = 10;
 
-        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 50f) + 1;
+        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 20f) + 1;
 
         for (int i = 0; i < nOfEnemies; i++)
         {
             int factoryToUse = Random.Range(0, enemyFactories.Length);
+
             Enemy enemy = enemyFactories[factoryToUse].GenerateEnemy(map, enemies);
 
             if (enemy == null)

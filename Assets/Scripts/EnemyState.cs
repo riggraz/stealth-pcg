@@ -7,5 +7,5 @@ public class EnemyState
     public int Rotation { get; set; }
     public int VisionLength { get; set; }
 
-    public HashSet<Vector2Int> SurveilledTiles { get; }
+    public HashSet<Vector2Int> SurveilledTiles { get; set; }
 }

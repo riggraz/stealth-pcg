@@ -19,12 +19,15 @@ public class Rotating90EnemyFactory : IEnemyFactory
 
         for (int i = 0; i < 4; i++)
         {
-            pattern.Add(new EnemyState()
+            EnemyState enemyState = new EnemyState()
             {
                 Position = position,
                 Rotation = rotations[i / 2],
                 VisionLength = visionLength
-            });
+            };
+            enemyState.SurveilledTiles = EnemyFactoryUtility.GetSurveilledTiles(map, enemyState);
+
+            pattern.Add(enemyState);
         }
 
         Enemy enemy = new Enemy(pattern);

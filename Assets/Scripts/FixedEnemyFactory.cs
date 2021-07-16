@@ -22,6 +22,8 @@ public class FixedEnemyFactory : IEnemyFactory
             VisionLength = visionLength
         };
 
+        enemyState.SurveilledTiles = EnemyFactoryUtility.GetSurveilledTiles(map, enemyState);
+
         List<EnemyState> pattern = new List<EnemyState> { enemyState };
         Enemy enemy = new Enemy(pattern);
 

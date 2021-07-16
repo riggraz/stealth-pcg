@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class EnemyFactoryUtility
 {
     public static float minDistanceFromStartEndPoints = 6f;
-    public static float minDistanceFromEnemies = 6f;
+    public static float minDistanceFromEnemies = 4f;
 
     static int[] rotations = new int[8] { 0, 45, 90, 135, 180, 225, 270, 315 };
 
@@ -94,8 +96,50 @@ public static class EnemyFactoryUtility
         return weights;
     }
 
+    // Returns a random vision length
     public static int GetVisionLength()
     {
         return Random.Range(2, Mathf.CeilToInt(minDistanceFromStartEndPoints));
+    }
+
+    // Given the map and an EnemyState (position+rotation+visionLength) returns
+    // a set containing all points of the map occupied by this EnemyState
+    public static HashSet<Vector2Int> GetSurveilledTiles(Map map, EnemyState e)
+    {
+        HashSet<Vector2Int> surveilledTiles = new HashSet<Vector2Int>();
+
+        surveilledTiles.Add(e.Position);
+
+        int diagonalVisionLength = Mathf.CeilToInt(0.70711f * e.VisionLength);
+
+        if (e.Rotation == 0)
+            for (int i = 1; i <= e.VisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x, e.Position.y - i));
+        else if (e.Rotation == 90)
+            for (int i = 1; i <= e.VisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x - i, e.Position.y));
+        else if (e.Rotation == 180)
+            for (int i = 1; i <= e.VisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x, e.Position.y + i));
+        else if (e.Rotation == 270)
+            for (int i = 1; i <= e.VisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x + i, e.Position.y));
+        else if (e.Rotation == 45)
+            for (int i = 1; i <= diagonalVisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x - i, e.Position.y - i));
+        else if (e.Rotation == 135)
+            for (int i = 1; i <= diagonalVisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x - i, e.Position.y + i));
+        else if (e.Rotation == 225)
+            for (int i = 1; i <= diagonalVisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x + i, e.Position.y + i));
+        else if (e.Rotation == 315)
+            for (int i = 1; i <= diagonalVisionLength; i++)
+                surveilledTiles.Add(new Vector2Int(e.Position.x + i, e.Position.y - i));
+
+        Debug.Log("SURVEILLED TILES");
+        for (int i = 0; i < surveilledTiles.Count; i++) Debug.Log(surveilledTiles.ToList()[i]);
+
+        return surveilledTiles;
     }
 }
