@@ -246,6 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcffc4256d4c7442bbd896262e5ba93d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seed: 
   minSize: 10
   maxSize: 15
   instantiator: {fileID: 651523083}

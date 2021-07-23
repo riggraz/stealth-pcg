@@ -3,13 +3,22 @@ using UnityEngine;
 
 public class Generator : MonoBehaviour
 {
+    public string seed = "";
     public int minSize, maxSize;
     public Instantiator instantiator;
 
     private Map map;
     private List<Enemy> enemies;
 
-    void Start() { GenerateLevel(); }
+    void Start() {
+        if (!System.String.IsNullOrEmpty(seed))
+            Random.state = JsonUtility.FromJson<Random.State>(seed);
+        Debug.Log("Copy the following Random.State if you want to save this level:");
+        Debug.Log(JsonUtility.ToJson(Random.state));
+        Debug.Log("Then, paste it in the seed property of Generator game object");
+
+        GenerateLevel();
+    }
 
     void GenerateLevel()
     {
