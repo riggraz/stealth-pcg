@@ -201,6 +201,7 @@ MonoBehaviour:
   startPointGameObject: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}
   endPointGameObject: {fileID: 1904505140815359100, guid: 385ee523713b14b2ab5d014cc6f8264f, type: 3}
   enemyGameObject: {fileID: 2403109219315996895, guid: bf8a5ec72018141dc8b231e7985f9b78, type: 3}
+  player: {fileID: 4248401259000947158, guid: 4395d21ccc66e4d6d902842d33a2fef1, type: 3}
   orchestrator: {fileID: 67603856}
 --- !u!4 &651523084
 Transform:

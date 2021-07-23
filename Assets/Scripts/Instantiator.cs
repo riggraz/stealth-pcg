@@ -6,6 +6,7 @@ public class Instantiator : MonoBehaviour
     public GameObject tileGameObject, wallGameObject;
     public GameObject startPointGameObject, endPointGameObject;
     public GameObject enemyGameObject;
+    public GameObject player;
     public Orchestrator orchestrator;
 
     private Map map;
@@ -20,6 +21,7 @@ public class Instantiator : MonoBehaviour
 
         InstantiateMap();
         InstantiateEnemies();
+        InstantiatePlayer();
 
         orchestrator.StartOrchestrating(enemies, enemiesGameObjects);
     }
@@ -62,6 +64,11 @@ public class Instantiator : MonoBehaviour
 
             enemiesGameObjects.Add(enemy);
         }
+    }
+
+    void InstantiatePlayer()
+    {
+        Instantiate(player, To3DVect(map.StartPoint, 1), Quaternion.identity);
     }
 
     private Vector3Int To3DVect(Vector2Int v, int thirdDim = 0)
