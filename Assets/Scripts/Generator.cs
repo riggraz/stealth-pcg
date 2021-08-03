@@ -28,6 +28,9 @@ public class Generator : MonoBehaviour
         bool solvable = Verifier.VerifyLevel(map, enemies);
         Debug.Log("LevelSolvable=" + solvable);
 
+        bool trivial = Verifier.IsLevelTrivial(map, enemies);
+        Debug.Log("LevelTrivial=" + trivial);
+
         instantiator.InstantiateLevel(map, enemies);
     }
 
@@ -66,11 +69,12 @@ public class Generator : MonoBehaviour
         };
 
         //int factoryToUse = 0;
-        //int nOfEnemies = 10;
+        //int nOfEnemies = 20;
 
-        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 20f) + 1;
+        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 20f) + Random.Range(-map.N / 2, map.N / 2) + 1;
 
-        for (int i = 0; i < nOfEnemies; i++)
+        int i = 0;
+        while (i < nOfEnemies || Verifier.IsLevelTrivial(map, enemies))
         {
             int factoryToUse = Random.Range(0, enemyFactories.Length);
 
@@ -78,11 +82,13 @@ public class Generator : MonoBehaviour
 
             if (enemy == null)
             {
-                Debug.Log("Enemy could not be created.");
-                continue;
+                Debug.Log("Enemy could not be created. Level may be trivial.");
+                break;
             }
 
             enemies.Add(enemy);
+
+            i++;
         }
     }
 }

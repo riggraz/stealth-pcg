@@ -59,8 +59,9 @@ public class Instantiator : MonoBehaviour
 
             // Adjust vision range of enemy
             Transform enemyVision = enemy.transform.GetChild(0);
-            enemyVision.localScale = new Vector3(0.75f, 0.75f, e.Pattern[0].VisionLength);
-            enemyVision.localPosition = new Vector3(0, 0, -0.5f - e.Pattern[0].VisionLength / 2f);
+            float visionLengthWorld = e.Pattern[0].VisionLength / enemy.transform.localScale.z;
+            enemyVision.localScale = new Vector3(0.75f, 0.75f, visionLengthWorld);
+            enemyVision.localPosition = new Vector3(0, 0, -0.5f - visionLengthWorld / 2f);
 
             enemiesGameObjects.Add(enemy);
         }

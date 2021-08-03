@@ -80,4 +80,58 @@ public static class Verifier
         EvolvePlayer(new Vector2Int(p.x, p.y + 1), walkableDistance - 1, newPositions, surveilledTiles);
         EvolvePlayer(new Vector2Int(p.x + 1, p.y), walkableDistance - 1, newPositions, surveilledTiles);
     }
+
+    public static HashSet<Vector2Int> trivialPositions;
+
+    /*
+     * Checks if there exist a path to the goal which
+     * is free for each state (i.e. level is trivial
+    */
+    public static bool IsLevelTrivial(Map map, List<Enemy> enemies)
+    {
+        Verifier.map = map;
+
+        HashSet<Vector2Int> surveilledTiles = new HashSet<Vector2Int>();
+
+        int nOfStates = 0;
+
+        foreach (Enemy e in enemies)
+            nOfStates = (e.Pattern.Count > nOfStates) ? e.Pattern.Count : nOfStates;
+
+        for (int i = 0; i < nOfStates; i++)
+            foreach (Enemy e in enemies)
+                surveilledTiles.UnionWith(e.Pattern[i % e.Pattern.Count].SurveilledTiles);
+
+        int iterationCount = 0;
+
+        HashSet<Vector2Int> playerPositions = new HashSet<Vector2Int>();
+        playerPositions.Add(map.StartPoint);
+
+        while (!playerPositions.Contains(map.EndPoint))
+        {
+            iterationCount++;
+            if (iterationCount > MAX_ITERATION_COUNT) break;
+
+            // All possible movements of the player during 1 time step
+            HashSet<Vector2Int> newPositions;
+            HashSet<Vector2Int> cumulatedNewPositions = new HashSet<Vector2Int>();
+            foreach (Vector2Int p in playerPositions)
+            {
+                newPositions = new HashSet<Vector2Int>();
+
+                EvolvePlayer(p, 1, newPositions, surveilledTiles);
+
+                cumulatedNewPositions.UnionWith(newPositions);
+            }
+
+            playerPositions.UnionWith(cumulatedNewPositions);
+        }
+
+        trivialPositions = playerPositions;
+
+        if (playerPositions.Contains(map.EndPoint)) return true;
+        else return false;
+    }
+
+
 }

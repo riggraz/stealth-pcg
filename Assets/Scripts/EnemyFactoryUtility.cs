@@ -6,8 +6,8 @@ using Random = UnityEngine.Random;
 
 public static class EnemyFactoryUtility
 {
-    public static float minDistanceFromStartEndPoints = 6f;
-    public static float minDistanceFromEnemies = 4f;
+    public static float minDistanceFromStartEndPoints = 4f;
+    public static float minDistanceFromEnemies = 3f;
 
     static int[] rotations = new int[8] { 0, 45, 90, 135, 180, 225, 270, 315 };
 
@@ -39,8 +39,14 @@ public static class EnemyFactoryUtility
             }
         }
 
-        //Debug.Log("Available positions = " + availablePositions.Count);
+        // If trivialPositions is not null that means that we've run the Verifier for triviality
+        // i.e. we want to make the level non trivial
+        if (Verifier.trivialPositions != null)
+        {
+            availablePositions.IntersectWith(Verifier.trivialPositions);
+        }
 
+        //Debug.Log("Available positions = " + availablePositions.Count);
         if (availablePositions.Count == 0) return new Vector2Int(-1, -1);
 
         return availablePositions.ElementAt<Vector2Int>(Random.Range(0, availablePositions.Count));
