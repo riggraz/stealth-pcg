@@ -247,8 +247,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 
-  minSize: 10
-  maxSize: 15
+  minSize: 6
+  maxSize: 10
   instantiator: {fileID: 651523083}
 --- !u!4 &658854603
 Transform:

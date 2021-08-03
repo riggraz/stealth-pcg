@@ -22,14 +22,22 @@ public class Generator : MonoBehaviour
 
     void GenerateLevel()
     {
-        GenerateMap();
-        GenerateEnemies();
+        bool solvable, trivial;
 
-        bool solvable = Verifier.VerifyLevel(map, enemies);
-        Debug.Log("LevelSolvable=" + solvable);
+        do
+        {
+            GenerateMap();
+            GenerateEnemies();
 
-        bool trivial = Verifier.IsLevelTrivial(map, enemies);
-        Debug.Log("LevelTrivial=" + trivial);
+            solvable = Verifier.VerifyLevel(map, enemies);
+            //Debug.Log("LevelSolvable=" + solvable);
+
+            trivial = Verifier.IsLevelTrivial(map, enemies);
+            //Debug.Log("LevelTrivial=" + trivial);
+        } while (!solvable || trivial);
+
+        //Debug.Log("LevelSolvable=" + solvable);
+        //Debug.Log("LevelTrivial=" + trivial);
 
         instantiator.InstantiateLevel(map, enemies);
     }
@@ -65,7 +73,8 @@ public class Generator : MonoBehaviour
         IEnemyFactory[] enemyFactories = new IEnemyFactory[]
         {
             new FixedEnemyFactory(),
-            new Rotating90EnemyFactory()
+            new Rotating90EnemyFactory(),
+            new Rotating360EnemyFactory(),
         };
 
         //int factoryToUse = 0;

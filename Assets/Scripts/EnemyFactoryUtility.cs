@@ -6,12 +6,12 @@ using Random = UnityEngine.Random;
 
 public static class EnemyFactoryUtility
 {
-    public static float minDistanceFromStartEndPoints = 4f;
-    public static float minDistanceFromEnemies = 3f;
+    public static float minDistanceFromStartEndPoints = 3f;
+    public static float minDistanceFromEnemies = 2f;
 
     static int[] rotations = new int[8] { 0, 45, 90, 135, 180, 225, 270, 315 };
 
-    public static Vector2Int GetRandomAvailablePosition(Map map, List<Enemy> enemies, int stateIndex)
+    private static HashSet<Vector2Int> GetAvailablePositions(Map map, List<Enemy> enemies, int stateIndex)
     {
         HashSet<Vector2Int> availablePositions = new HashSet<Vector2Int>();
 
@@ -47,7 +47,42 @@ public static class EnemyFactoryUtility
         }
 
         //Debug.Log("Available positions = " + availablePositions.Count);
-        if (availablePositions.Count == 0) return new Vector2Int(-1, -1);
+        if (availablePositions.Count == 0) return null;
+
+        return availablePositions;
+    }
+
+    public static Vector2Int GetRandomAvailablePosition(Map map, List<Enemy> enemies, int stateIndex)
+    {
+        HashSet<Vector2Int> availablePositions = GetAvailablePositions(map, enemies, stateIndex);
+
+        if (availablePositions == null) return new Vector2Int(-1, -1);
+
+        return availablePositions.ElementAt<Vector2Int>(Random.Range(0, availablePositions.Count));
+    }
+
+    public static Vector2Int GetAvailablePositionNearCenter(Map map, List<Enemy> enemies, int stateIndex)
+    {
+        HashSet<Vector2Int> availablePositions = GetAvailablePositions(map, enemies, stateIndex);
+        if (availablePositions == null) return new Vector2Int(-1, -1);
+
+        HashSet<Vector2Int> positionsToRemove = new HashSet<Vector2Int>();
+
+        foreach (Vector2Int position in availablePositions)
+        {
+            int distanceFromCenterX = Math.Abs(position.x - map.N / 2);
+            int distanceFromCenterY = Math.Abs(position.y - map.M / 2);
+
+            int maxDistanceFromCenterX =  Mathf.FloorToInt(Mathf.Sqrt(map.N));
+            int maxDistanceFromCenterY = Mathf.FloorToInt(Mathf.Sqrt(map.M)); ;
+
+            if (distanceFromCenterX > maxDistanceFromCenterX || distanceFromCenterY > maxDistanceFromCenterY)
+                positionsToRemove.Add(position);
+        }
+
+        availablePositions.ExceptWith(positionsToRemove);
+
+        if (availablePositions.Count <= 0) return new Vector2Int(-1, -1);
 
         return availablePositions.ElementAt<Vector2Int>(Random.Range(0, availablePositions.Count));
     }
@@ -143,8 +178,8 @@ public static class EnemyFactoryUtility
             for (int i = 1; i <= diagonalVisionLength; i++)
                 surveilledTiles.Add(new Vector2Int(e.Position.x + i, e.Position.y - i));
 
-        Debug.Log("SURVEILLED TILES");
-        for (int i = 0; i < surveilledTiles.Count; i++) Debug.Log(surveilledTiles.ToList()[i]);
+        //Debug.Log("SURVEILLED TILES");
+        //for (int i = 0; i < surveilledTiles.Count; i++) Debug.Log(surveilledTiles.ToList()[i]);
 
         return surveilledTiles;
     }
