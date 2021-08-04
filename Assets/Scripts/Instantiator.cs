@@ -69,7 +69,8 @@ public class Instantiator : MonoBehaviour
 
     void InstantiatePlayer()
     {
-        Instantiate(player, To3DVect(map.StartPoint, 1), Quaternion.identity);
+        GameObject playerGameObject = Instantiate(player, To3DVect(map.StartPoint, 1), Quaternion.identity);
+        playerGameObject.GetComponent<PlayerController>().SetMapSize(map.M, map.N);
     }
 
     private Vector3Int To3DVect(Vector2Int v, int thirdDim = 0)
