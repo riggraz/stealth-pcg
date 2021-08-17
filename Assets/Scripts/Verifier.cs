@@ -9,6 +9,8 @@ public static class Verifier
 
     public static bool VerifyLevel(Map map, List<Enemy> enemies)
     {
+        if (enemies.Count == 0) return false;
+
         Verifier.map = map;
 
         int currentState = 0;
@@ -89,6 +91,8 @@ public static class Verifier
     */
     public static bool IsLevelTrivial(Map map, List<Enemy> enemies)
     {
+        if (enemies.Count == 0) return true;
+
         Verifier.map = map;
 
         HashSet<Vector2Int> surveilledTiles = new HashSet<Vector2Int>();

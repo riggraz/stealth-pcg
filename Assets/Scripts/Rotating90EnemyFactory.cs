@@ -7,7 +7,7 @@ public class Rotating90EnemyFactory : IEnemyFactory
 
     public Enemy GenerateEnemy(Map map, List<Enemy> enemies)
     {
-        Vector2Int position = EnemyFactoryUtility.GetRandomAvailablePosition(map, enemies, 0);
+        Vector2Int position = EnemyFactoryUtility.GetRandomAlwaysAvailablePosition(map, enemies);
 
         // no positions available => enemy creation aborted => return null
         if (position.x == -1) return null;
@@ -31,6 +31,8 @@ public class Rotating90EnemyFactory : IEnemyFactory
             pattern.Add(enemyState);
             pattern.Add(enemyState);
         }
+
+        EnemyFactoryUtility.RandomizePatternOrder(pattern);
 
         Enemy enemy = new Enemy(pattern);
         return enemy;

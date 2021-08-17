@@ -196,7 +196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28927f38371334d71b30f62bb89537b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraGameObject: {fileID: 963194225}
   tileGameObject: {fileID: 3661510819142552997, guid: 496c5cba100a84ed4a121eea0923ba61, type: 3}
   wallGameObject: {fileID: 2633092757827695146, guid: 77e241edd847a436e83c352c44a73d34, type: 3}
   startPointGameObject: {fileID: 8244298052791940866, guid: 2207cd08772fb44b98186fc60278db66, type: 3}

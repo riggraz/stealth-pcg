@@ -38,11 +38,17 @@ public class Orchestrator : MonoBehaviour
         {
             int enemyStateN = enemies[i].Pattern.Count;
 
-            //enemiesGameObjects[i].transform.position = Vector2.Lerp(
-            //    enemies[i].Pattern[currentState % enemyStateN].Position,
-            //    enemies[i].Pattern[(currentState + 1) % enemyStateN].Position,
-            //    t
-            //);
+            Vector2 position2D = Vector2.Lerp(
+                enemies[i].Pattern[currentState % enemyStateN].Position,
+                enemies[i].Pattern[(currentState + 1) % enemyStateN].Position,
+                t
+            );
+
+            enemiesGameObjects[i].transform.position = new Vector3(
+                position2D.x,
+                enemiesGameObjects[i].transform.position.y,
+                position2D.y
+            );
 
             enemiesGameObjects[i].transform.rotation = Quaternion.AngleAxis(
                 Mathf.LerpAngle(

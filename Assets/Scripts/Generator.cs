@@ -75,12 +75,14 @@ public class Generator : MonoBehaviour
             new FixedEnemyFactory(),
             new Rotating90EnemyFactory(),
             new Rotating360EnemyFactory(),
+            new PatrolingEnemyFactory(),
         };
 
         //int factoryToUse = 0;
         //int nOfEnemies = 20;
 
-        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 20f) + Random.Range(-map.N / 2, map.N / 2) + 1;
+        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4) + 1;
+        Debug.Log("# of enemies: " + nOfEnemies);
 
         int i = 0;
         while (i < nOfEnemies || Verifier.IsLevelTrivial(map, enemies))
@@ -89,11 +91,7 @@ public class Generator : MonoBehaviour
 
             Enemy enemy = enemyFactories[factoryToUse].GenerateEnemy(map, enemies);
 
-            if (enemy == null)
-            {
-                Debug.Log("Enemy could not be created. Level may be trivial.");
-                break;
-            }
+            if (enemy == null) break;
 
             enemies.Add(enemy);
 
