@@ -9,9 +9,9 @@ public static class EnemyFactoryUtility
     public static float minDistanceFromStartEndPoints = 3f;
     public static float minDistanceFromEnemies = 2f;
 
-    static int[] rotations = new int[8] { 0, 45, 90, 135, 180, 225, 270, 315 };
+    static readonly int[] rotations = new int[8] { 0, 45, 90, 135, 180, 225, 270, 315 };
 
-    /* Returns available positions at state stateIndex given the list of enemies */
+    // Returns available positions at state stateIndex given the list of enemies
     public static HashSet<Vector2Int> GetAvailablePositions(Map map, List<Enemy> enemies, int stateIndex)
     {
         HashSet<Vector2Int> availablePositions = new HashSet<Vector2Int>();
@@ -53,11 +53,10 @@ public static class EnemyFactoryUtility
         return availablePositions;
     }
 
-    /* Returns an hash set of all positions that are available in every state */
+    // Returns an hash set of all positions that are available in every state
     public static HashSet<Vector2Int> GetAlwaysAvailablePositions(Map map, List<Enemy> enemies)
     {
-        int nOfStates = 1;
-        foreach (Enemy e in enemies) nOfStates = (e.Pattern.Count > nOfStates) ? e.Pattern.Count : nOfStates;
+        int nOfStates = GetNumberOfStates(enemies);
 
         HashSet<Vector2Int>[] availablePositions = new HashSet<Vector2Int>[nOfStates];
 
@@ -70,9 +69,12 @@ public static class EnemyFactoryUtility
         for (int i = 1; i < nOfStates; i++)
             availablePositions[0].IntersectWith(availablePositions[i]);
 
+        if (availablePositions[0].Count == 0) return null;
+
         return availablePositions[0];
     }
 
+    // Returns a random position from the ones available at state stateIndex
     public static Vector2Int GetRandomAvailablePosition(Map map, List<Enemy> enemies, int stateIndex)
     {
         HashSet<Vector2Int> availablePositions = GetAvailablePositions(map, enemies, stateIndex);
@@ -82,6 +84,7 @@ public static class EnemyFactoryUtility
         return availablePositions.ElementAt<Vector2Int>(Random.Range(0, availablePositions.Count));
     }
 
+    // Returns a random position from the ones that are always available
     public static Vector2Int GetRandomAlwaysAvailablePosition(Map map, List<Enemy> enemies)
     {
         HashSet<Vector2Int> availablePositions = GetAlwaysAvailablePositions(map, enemies);
@@ -91,9 +94,10 @@ public static class EnemyFactoryUtility
         return availablePositions.ElementAt<Vector2Int>(Random.Range(0, availablePositions.Count));
     }
 
+    // Returns a random position that is both available at state stateIndex and near the center of the map
     public static Vector2Int GetAvailablePositionNearCenter(Map map, List<Enemy> enemies, int stateIndex)
     {
-        HashSet<Vector2Int> availablePositions = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> availablePositions;
 
         if (stateIndex == -1)
             availablePositions = GetAlwaysAvailablePositions(map, enemies);
@@ -179,10 +183,8 @@ public static class EnemyFactoryUtility
         return Random.Range(2, Mathf.CeilToInt(minDistanceFromStartEndPoints));
     }
 
-    /*
-     * Given the pattern, find a cut point and invert the two subpatterns
-     * Used to create more diversity
-     */
+     // Given the pattern of an enemy, find a cut point and invert the two
+     // subpatterns; used to create more diversity
     public static void RandomizePatternOrder(List<EnemyState> pattern)
     {
         int nOfStates = pattern.Count;
@@ -232,5 +234,16 @@ public static class EnemyFactoryUtility
         //for (int i = 0; i < surveilledTiles.Count; i++) Debug.Log(surveilledTiles.ToList()[i]);
 
         return surveilledTiles;
+    }
+
+    // Given the list of enemies returns the number of states of the level
+    public static int GetNumberOfStates(List<Enemy> enemies)
+    {
+        int nOfStates = 1;
+
+        foreach (Enemy e in enemies)
+            nOfStates = (e.Pattern.Count > nOfStates) ? e.Pattern.Count : nOfStates;
+
+        return nOfStates;
     }
 }

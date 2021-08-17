@@ -10,17 +10,15 @@ public class Generator : MonoBehaviour
     private Map map;
     private List<Enemy> enemies;
 
-    void Start() {
-        if (!System.String.IsNullOrEmpty(seed))
-            Random.state = JsonUtility.FromJson<Random.State>(seed);
-        Debug.Log("Copy the following Random.State if you want to save this level:");
-        Debug.Log(JsonUtility.ToJson(Random.state));
-        Debug.Log("Then, paste it in the seed property of Generator game object");
+    private string randomState;
 
+    private void Start() {
+        InitializeRandomState();
         GenerateLevel();
     }
 
-    void GenerateLevel()
+    // Generate a new level until it is both solvable and not trivial
+    private void GenerateLevel()
     {
         bool solvable, trivial;
 
@@ -29,15 +27,11 @@ public class Generator : MonoBehaviour
             GenerateMap();
             GenerateEnemies();
 
-            solvable = Verifier.VerifyLevel(map, enemies);
-            //Debug.Log("LevelSolvable=" + solvable);
-
+            solvable = Verifier.IsLevelSolvable(map, enemies);
             trivial = Verifier.IsLevelTrivial(map, enemies);
-            //Debug.Log("LevelTrivial=" + trivial);
         } while (!solvable || trivial);
 
-        //Debug.Log("LevelSolvable=" + solvable);
-        //Debug.Log("LevelTrivial=" + trivial);
+        PrintLevelInfo();
 
         instantiator.InstantiateLevel(map, enemies);
     }
@@ -45,7 +39,7 @@ public class Generator : MonoBehaviour
     // Randomly draws M and N such that they are in range [minSize, maxSize] and M >= N
     // Randomly draws x-coordinate of start and end points
     // (their z-coordinate is always 0 and M-1 respectively)
-    void GenerateMap()
+    private void GenerateMap()
     {
         map = new Map();
 
@@ -62,11 +56,10 @@ public class Generator : MonoBehaviour
         map.N = N;
         map.StartPoint = new Vector2Int(startPointX, 0);
         map.EndPoint = new Vector2Int(endPointX, map.M - 1);
-
-        Debug.Log("Map: M=" + map.M + ", N=" + map.N + ", start=" + map.StartPoint + ", end=" + map.EndPoint);
     }
 
-    void GenerateEnemies()
+    // Tries to generate nOfEnemies enemies and make the level non trivial
+    private void GenerateEnemies()
     {
         enemies = new List<Enemy>();
 
@@ -78,11 +71,7 @@ public class Generator : MonoBehaviour
             new PatrolingEnemyFactory(),
         };
 
-        //int factoryToUse = 0;
-        //int nOfEnemies = 20;
-
         int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4) + 1;
-        Debug.Log("# of enemies: " + nOfEnemies);
 
         int i = 0;
         while (i < nOfEnemies || Verifier.IsLevelTrivial(map, enemies))
@@ -97,5 +86,34 @@ public class Generator : MonoBehaviour
 
             i++;
         }
+    }
+
+    // Initialize with supplied seed (Random.state), if provided
+    private void InitializeRandomState()
+    {
+        if (!string.IsNullOrEmpty(seed))
+            Random.state = JsonUtility.FromJson<Random.State>(seed);
+
+        randomState = JsonUtility.ToJson(Random.state);
+    }
+
+    // Print info about the level (map dimensions, enemies, ...)
+    private void PrintLevelInfo()
+    {
+        Debug.Log("<color=green>[Map information]</color>");
+        Debug.Log("M=" + map.M + ", N=" + map.N + "(" + map.M + "x" + map.N + ")");
+        Debug.Log("startPoint=" + map.StartPoint + ", endPoint=" + map.EndPoint);
+
+        Debug.Log("<color=green>[Enemies information]</color>");
+        Debug.Log(enemies.Count + " enemies");
+        foreach (Enemy e in enemies)
+            Debug.Log(e);
+
+        Debug.Log("<color=green>[Seed information]</color>");
+        Debug.Log("The following Random.State has been copied to your clipboard:");
+        Debug.Log(randomState);
+        GUIUtility.systemCopyBuffer = randomState;
+        Debug.Log("You can paste it in the 'seed' property of Generator " +
+            "game object to replay this level in the future");
     }
 }

@@ -7,17 +7,15 @@ public static class Verifier
 
     public static Map map;
 
-    public static bool VerifyLevel(Map map, List<Enemy> enemies)
+    // Checks whether the level is solvable by simulating it in a discrete manner
+    public static bool IsLevelSolvable(Map map, List<Enemy> enemies)
     {
         if (enemies.Count == 0) return false;
 
         Verifier.map = map;
 
         int currentState = 0;
-        int nOfStates = 0;
-
-        foreach (Enemy e in enemies)
-            nOfStates = (e.Pattern.Count > nOfStates) ? e.Pattern.Count : nOfStates;
+        int nOfStates = EnemyFactoryUtility.GetNumberOfStates(enemies);
 
         HashSet<Vector2Int>[] surveilledTiles = new HashSet<Vector2Int>[nOfStates];
         for (int i = 0; i < surveilledTiles.Length; i++)
@@ -63,6 +61,8 @@ public static class Verifier
         else return false;
     }
 
+    // A bucket-fill like algorithm that simulates every possible movement
+    // of the player during 1 time step
     private static void EvolvePlayer(
         Vector2Int p,
         float walkableDistance,
@@ -97,10 +97,7 @@ public static class Verifier
 
         HashSet<Vector2Int> surveilledTiles = new HashSet<Vector2Int>();
 
-        int nOfStates = 0;
-
-        foreach (Enemy e in enemies)
-            nOfStates = (e.Pattern.Count > nOfStates) ? e.Pattern.Count : nOfStates;
+        int nOfStates = EnemyFactoryUtility.GetNumberOfStates(enemies);
 
         for (int i = 0; i < nOfStates; i++)
             foreach (Enemy e in enemies)
@@ -136,6 +133,4 @@ public static class Verifier
         if (playerPositions.Contains(map.EndPoint)) return true;
         else return false;
     }
-
-
 }

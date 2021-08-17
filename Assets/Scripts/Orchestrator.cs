@@ -22,6 +22,7 @@ public class Orchestrator : MonoBehaviour
         t = 0f;
     }
 
+    // Moves/rotates every enemy according to its state
     void Update()
     {
         if (!orchestrating) return;

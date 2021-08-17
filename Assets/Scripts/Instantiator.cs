@@ -26,7 +26,7 @@ public class Instantiator : MonoBehaviour
         orchestrator.StartOrchestrating(enemies, enemiesGameObjects);
     }
 
-    // Instantiate an MxN map + a border of thickness 1 around it
+    // Instantiates an MxN map and a border of thickness 1 around it
     // Also places start and end points
     void InstantiateMap()
     {
@@ -47,6 +47,7 @@ public class Instantiator : MonoBehaviour
         Instantiate(endPointGameObject, To3DVect(map.EndPoint, 1), Quaternion.identity);
     }
 
+    // Instantiates the whole list of enemies
     void InstantiateEnemies()
     {
         foreach(Enemy e in enemies)
@@ -73,6 +74,7 @@ public class Instantiator : MonoBehaviour
         playerGameObject.GetComponent<PlayerController>().SetMapSize(map.M, map.N);
     }
 
+    // Converts the internal 2D representation of points/vectors to the 3D representation
     private Vector3Int To3DVect(Vector2Int v, int thirdDim = 0)
     {
         return new Vector3Int(v.x, thirdDim, v.y);
