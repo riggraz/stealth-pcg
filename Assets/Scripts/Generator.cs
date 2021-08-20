@@ -69,20 +69,28 @@ public class Generator : MonoBehaviour
             new Rotating90EnemyFactory(),
             new Rotating360EnemyFactory(),
             new PatrolingEnemyFactory(),
+            new PatrolingEnemyFactory(),
         };
 
         int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4) + 1;
 
         int i = 0;
+        int enemyAddFailures = 0;
         while (i < nOfEnemies || Verifier.IsLevelTrivial(map, enemies))
         {
             int factoryToUse = Random.Range(0, enemyFactories.Length);
 
             Enemy enemy = enemyFactories[factoryToUse].GenerateEnemy(map, enemies);
 
-            if (enemy == null) break;
+            if (enemy == null)
+            {
+                enemyAddFailures++;
+                if (enemyAddFailures > 10) break;
+                continue;
+            }
 
             enemies.Add(enemy);
+            enemyAddFailures = 0;
 
             i++;
         }

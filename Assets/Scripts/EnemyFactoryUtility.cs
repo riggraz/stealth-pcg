@@ -45,6 +45,7 @@ public static class EnemyFactoryUtility
         if (Verifier.trivialPositions != null)
         {
             availablePositions.IntersectWith(Verifier.trivialPositions);
+            Verifier.trivialPositions = null;
         }
 
         //Debug.Log("Available positions = " + availablePositions.Count);
@@ -68,6 +69,14 @@ public static class EnemyFactoryUtility
 
         for (int i = 1; i < nOfStates; i++)
             availablePositions[0].IntersectWith(availablePositions[i]);
+
+        // If trivialPositions is not null that means that we've run the Verifier for triviality
+        // i.e. we want to make the level non trivial
+        if (Verifier.trivialPositions != null)
+        {
+            availablePositions[0].IntersectWith(Verifier.trivialPositions);
+            Verifier.trivialPositions = null;
+        }
 
         if (availablePositions[0].Count == 0) return null;
 
@@ -229,6 +238,13 @@ public static class EnemyFactoryUtility
         else if (e.Rotation == 315)
             for (int i = 1; i <= diagonalVisionLength; i++)
                 surveilledTiles.Add(new Vector2Int(e.Position.x + i, e.Position.y - i));
+
+        // Remove tiles outside the map
+        foreach (Vector2Int t in surveilledTiles.ToArray<Vector2Int>())
+        {
+            if (t.x < 0 || t.x >= map.N || t.y < 0 || t.y >= map.M)
+                surveilledTiles.Remove(t);
+        }
 
         //Debug.Log("SURVEILLED TILES");
         //for (int i = 0; i < surveilledTiles.Count; i++) Debug.Log(surveilledTiles.ToList()[i]);

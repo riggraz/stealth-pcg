@@ -87,7 +87,7 @@ public static class Verifier
 
     /*
      * Checks if there exist a path to the goal which
-     * is free for each state (i.e. level is trivial
+     * is free for each state (i.e. level is trivial)
     */
     public static bool IsLevelTrivial(Map map, List<Enemy> enemies)
     {
@@ -103,34 +103,72 @@ public static class Verifier
             foreach (Enemy e in enemies)
                 surveilledTiles.UnionWith(e.Pattern[i % e.Pattern.Count].SurveilledTiles);
 
-        int iterationCount = 0;
+        // Create a Graph representation from the Map and surveilledTiles
+        // This Graph representation will be used to run A*
 
-        HashSet<Vector2Int> playerPositions = new HashSet<Vector2Int>();
-        playerPositions.Add(map.StartPoint);
+        Graph graph = new Graph();
+        Node startNode = null;
+        Node goalNode = null;
 
-        while (!playerPositions.Contains(map.EndPoint))
+        for (int i = 0; i < map.N; i++)
         {
-            iterationCount++;
-            if (iterationCount > MAX_ITERATION_COUNT) break;
-
-            // All possible movements of the player during 1 time step
-            HashSet<Vector2Int> newPositions;
-            HashSet<Vector2Int> cumulatedNewPositions = new HashSet<Vector2Int>();
-            foreach (Vector2Int p in playerPositions)
+            for (int j = 0; j < map.M; j++)
             {
-                newPositions = new HashSet<Vector2Int>();
+                if (surveilledTiles.Contains(new Vector2Int(i, j))) continue;
 
-                EvolvePlayer(p, 1, newPositions, surveilledTiles);
+                Node from = new Node() { Description = new Vector2Int(i, j) };
 
-                cumulatedNewPositions.UnionWith(newPositions);
+                if (from.Description.Equals(map.StartPoint)) startNode = from;
+                if (from.Description.Equals(map.EndPoint)) goalNode = from;
+
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        Node to = new Node() { Description = new Vector2Int(i + x, j + y) };
+
+                        if (surveilledTiles.Contains(to.Description) ||
+                            to.Description.x < 0 || to.Description.x >= map.N ||
+                            to.Description.y < 0 || to.Description.y >= map.M ||
+                            from.Equals(to)
+                            ) continue;
+
+                        // An Edge is diagonal if both x and y are != 0
+                        bool diagonalEdge = (Mathf.Abs(x) + Mathf.Abs(y) == 2);
+
+                        Edge e = new Edge()
+                        {
+                            From = from,
+                            To = to,
+                            Weight = diagonalEdge ? Mathf.Sqrt(2) : 1f // more weight to diagonal edge
+                        };
+
+                        graph.AddEdge(e);
+                    }
+                }
             }
-
-            playerPositions.UnionWith(cumulatedNewPositions);
         }
 
-        trivialPositions = playerPositions;
+        //Debug.Log("# of surveilled tiles: " + surveilledTiles.Count);
+        //Debug.Log("# of graph nodes: " + graph.GetNodes().Length);
+        //Debug.Log("# of total tiles: " + map.N * map.M);
+        //Debug.Log("# of total tiles - # of surveilled tiles: " + (map.N * map.M - surveilledTiles.Count));
+        Debug.Log(graph);
 
-        if (playerPositions.Contains(map.EndPoint)) return true;
-        else return false;
+        Edge[] aStarResult = AStar.Solve(graph, startNode, goalNode, Heuristics.EuclideanEstimator);
+
+        // No path available => level non trivial
+        if (aStarResult == null) return false;
+
+        // Otherwise, level is trivial => create expose the set of tiles that compose the trivial path
+        trivialPositions = new HashSet<Vector2Int>();
+        foreach (Edge e in aStarResult)
+            trivialPositions.Add(e.From.Description);
+
+        trivialPositions.Remove(aStarResult[0].From.Description);
+
+        Debug.Log("Trivial positions: " + trivialPositions);
+
+        return true;
     }
 }
