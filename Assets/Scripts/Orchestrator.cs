@@ -17,6 +17,13 @@ public class Orchestrator : MonoBehaviour
 
     void Start()
     {
+        Reset();
+    }
+
+    public void Reset()
+    {
+        orchestrating = false;
+
         nOfStates = 0;
         currentState = 0;
         t = 0f;

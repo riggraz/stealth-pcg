@@ -1,13 +1,20 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed;
+    public Text levelStatusText;
+    public GameController gameController;
 
-    private int M, N;
+    private Map map;
+    private Rigidbody rb;
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        gameController = FindObjectOfType<GameController>();
+
         AlignCameraToMap();
     }
 
@@ -18,20 +25,32 @@ public class PlayerController : MonoBehaviour
 
         Vector3 velocity = new Vector3(h, 0, v).normalized;
 
-        Vector3 newPosition = transform.position + velocity * speed * Time.fixedDeltaTime;
+        Vector3 newPosition = rb.position + velocity * speed * Time.fixedDeltaTime;
 
-        float x = Mathf.Clamp(newPosition.x, 0, N - 1);
-        float z = Mathf.Clamp(newPosition.z, 0, M - 1);
+        float x = Mathf.Clamp(newPosition.x, 0, map.N - 1);
+        float z = Mathf.Clamp(newPosition.z, 0, map.M - 1);
 
-        transform.position = new Vector3(x, newPosition.y, z);
+        rb.position = new Vector3(x, newPosition.y, z);
 
         AlignCameraToPlayer();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy") && !gameController.IsLevelCompleted())
+        {
+            rb.MovePosition(new Vector3(map.StartPoint.x, 0f, map.StartPoint.y));
+        }
+        else if (other.CompareTag("Finish"))
+        {
+            gameController.OnLevelCompleted();
+        }
     }
 
     private void AlignCameraToMap()
     {
         Vector3 mcPosition = Camera.main.transform.position;
-        mcPosition = new Vector3(N / 2 - 0.5f, mcPosition.y, mcPosition.z);
+        mcPosition = new Vector3(map.N / 2 - 0.5f, mcPosition.y, mcPosition.z);
         Camera.main.transform.position = mcPosition;
     }
 
@@ -42,9 +61,8 @@ public class PlayerController : MonoBehaviour
         Camera.main.transform.position = mcPosition;
     }
 
-    public void SetMapSize(int M, int N)
+    public void SetMap(Map map)
     {
-        this.M = M;
-        this.N = N;
+        this.map = map;
     }
 }

@@ -6,20 +6,20 @@ public class Generator : MonoBehaviour
     public string seed = "";
     public int minSize, maxSize;
     public Instantiator instantiator;
+    public GameController gameController;
 
     private Map map;
     private List<Enemy> enemies;
 
-    private string randomState;
-
     private void Start() {
-        InitializeRandomState();
         GenerateLevel();
     }
 
     // Generate a new level until it is both solvable and not trivial
-    private void GenerateLevel()
+    public void GenerateLevel()
     {
+        InitializeRandomState();
+
         bool solvable, trivial;
 
         do
@@ -102,7 +102,7 @@ public class Generator : MonoBehaviour
         if (!string.IsNullOrEmpty(seed))
             Random.state = JsonUtility.FromJson<Random.State>(seed);
 
-        randomState = JsonUtility.ToJson(Random.state);
+        gameController.SetRandomState(JsonUtility.ToJson(Random.state));
     }
 
     // Print info about the level (map dimensions, enemies, ...)
@@ -118,10 +118,9 @@ public class Generator : MonoBehaviour
             Debug.Log(e);
 
         Debug.Log("<color=green>[Seed information]</color>");
-        Debug.Log("The following Random.State has been copied to your clipboard:");
-        Debug.Log(randomState);
-        GUIUtility.systemCopyBuffer = randomState;
-        Debug.Log("You can paste it in the 'seed' property of Generator " +
+        Debug.Log("Copy the following Random.state:");
+        Debug.Log(gameController.GetRandomState());
+        Debug.Log("Then paste it in the 'seed' property of Generator " +
             "game object to replay this level in the future");
     }
 }

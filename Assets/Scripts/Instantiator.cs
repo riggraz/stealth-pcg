@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Instantiator : MonoBehaviour
 {
@@ -7,10 +8,14 @@ public class Instantiator : MonoBehaviour
     public GameObject startPointGameObject, endPointGameObject;
     public GameObject enemyGameObject;
     public GameObject player;
+    public Text levelStatusText;
     public Orchestrator orchestrator;
 
     private Map map;
     private List<Enemy> enemies;
+
+    private GameObject mapGameObject;
+    private GameObject playerGameObject;
     private List<GameObject> enemiesGameObjects;
 
     public void InstantiateLevel(Map map, List<Enemy> enemies)
@@ -24,13 +29,22 @@ public class Instantiator : MonoBehaviour
         InstantiatePlayer();
 
         orchestrator.StartOrchestrating(enemies, enemiesGameObjects);
+
+        levelStatusText.text = "Playing...";
+    }
+
+    public void DestroyLevel()
+    {
+        Destroy(mapGameObject);
+        Destroy(playerGameObject);
+        foreach (GameObject enemyGO in enemiesGameObjects) Destroy(enemyGO);
     }
 
     // Instantiates an MxN map and a border of thickness 1 around it
     // Also places start and end points
     void InstantiateMap()
     {
-        GameObject mapGameObject = new GameObject("Map");
+        mapGameObject = new GameObject("Map");
 
         for (int i = -1; i <= map.M; i++)
         {
@@ -43,8 +57,8 @@ public class Instantiator : MonoBehaviour
             }
         }
 
-        Instantiate(startPointGameObject, To3DVect(map.StartPoint, 1), Quaternion.identity);
-        Instantiate(endPointGameObject, To3DVect(map.EndPoint, 1), Quaternion.identity);
+        Instantiate(startPointGameObject, To3DVect(map.StartPoint, 1), Quaternion.identity, mapGameObject.transform);
+        Instantiate(endPointGameObject, To3DVect(map.EndPoint, 1), Quaternion.identity, mapGameObject.transform);
     }
 
     // Instantiates the whole list of enemies
@@ -70,8 +84,8 @@ public class Instantiator : MonoBehaviour
 
     void InstantiatePlayer()
     {
-        GameObject playerGameObject = Instantiate(player, To3DVect(map.StartPoint, 1), Quaternion.identity);
-        playerGameObject.GetComponent<PlayerController>().SetMapSize(map.M, map.N);
+        playerGameObject = Instantiate(player, To3DVect(map.StartPoint, 1), Quaternion.identity);
+        playerGameObject.GetComponent<PlayerController>().SetMap(map);
     }
 
     // Converts the internal 2D representation of points/vectors to the 3D representation
