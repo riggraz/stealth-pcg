@@ -72,7 +72,7 @@ public class Generator : MonoBehaviour
             new PatrolingEnemyFactory(),
         };
 
-        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4) + 1;
+        int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4 + 1) + 1;
 
         int i = 0;
         int enemyAddFailures = 0;
