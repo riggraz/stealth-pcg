@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24896e2d35a3b40a6a6d2647887e44c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateDuration: 1
+  stateDuration: 0.8
 --- !u!4 &67603857
 Transform:
   m_ObjectHideFlags: 0
@@ -575,8 +575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 
-  minSize: 6
-  maxSize: 10
+  minSize: 5
+  maxSize: 8
   instantiator: {fileID: 651523083}
   gameController: {fileID: 447585607}
 --- !u!4 &658854603
