@@ -16,6 +16,8 @@ public class PatrolingEnemyFactory : IEnemyFactory
         HashSet<Vector2Int> availablePositions = EnemyFactoryUtility.GetAvailablePositions(map, enemies, 0);
         foreach (Vector2Int position in availablePositions)
         {
+            if (position1.y == 0 && position.y == 0) continue; // otherwise enemy will trapass player in start point 
+
             if (position1.x == position.x || position1.y == position.y)
                 if ((position - position1).magnitude >= 2 && (position - position1).magnitude <= 6)
                 {
