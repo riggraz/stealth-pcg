@@ -49,7 +49,7 @@ public class Orchestrator : MonoBehaviour
             Vector2 position2D = Vector2.Lerp(
                 enemies[i].Pattern[currentState % enemyStateN].Position,
                 enemies[i].Pattern[(currentState + 1) % enemyStateN].Position,
-                t
+                t / stateDuration
             );
 
             enemiesGameObjects[i].transform.position = new Vector3(
