@@ -10,6 +10,8 @@ public class GameController : MonoBehaviour
 
     public Text levelStatusText;
     public Text seedText;
+    public Text difficultyText;
+    public Slider difficultySlider;
     public Button nextLevelButton;
 
     private bool levelCompleted = false;
@@ -51,6 +53,12 @@ public class GameController : MonoBehaviour
     public void OnCopyToClipboard()
     {
         GUIUtility.systemCopyBuffer = randomState;
+    }
+
+    public void OnDifficultyChange()
+    {
+        difficultyText.text = "Difficulty: " + difficultySlider.value;
+        generator.difficulty = Mathf.RoundToInt(difficultySlider.value);
     }
 
     public void SetRandomState(string randomState)

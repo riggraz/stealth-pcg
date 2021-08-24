@@ -4,7 +4,10 @@ using UnityEngine;
 public class Generator : MonoBehaviour
 {
     public string seed = "";
-    public int minSize, maxSize;
+    private int minSize, maxSize;
+    [Range(1, 10)]
+    public int difficulty = 3;
+
     public Instantiator instantiator;
     public GameController gameController;
 
@@ -24,6 +27,9 @@ public class Generator : MonoBehaviour
 
         do
         {
+            minSize = difficulty + 2;
+            maxSize = difficulty + 5;
+
             GenerateMap();
             GenerateEnemies();
 
@@ -73,6 +79,7 @@ public class Generator : MonoBehaviour
         };
 
         int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4 + 1) + 1;
+        nOfEnemies = Mathf.Clamp(nOfEnemies, difficulty, difficulty * 2);
 
         int i = 0;
         int enemyAddFailures = 0;
