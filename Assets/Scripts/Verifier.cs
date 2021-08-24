@@ -114,12 +114,12 @@ public static class Verifier
         {
             for (int j = 0; j < map.M; j++)
             {
-                if (surveilledTiles.Contains(new Vector2Int(i, j))) continue;
-
                 Node from = new Node() { Description = new Vector2Int(i, j) };
 
                 if (from.Description.Equals(map.StartPoint)) startNode = from;
                 if (from.Description.Equals(map.EndPoint)) goalNode = from;
+
+                if (surveilledTiles.Contains(new Vector2Int(i, j))) continue;
 
                 for (int x = -1; x <= 1; x++)
                 {
