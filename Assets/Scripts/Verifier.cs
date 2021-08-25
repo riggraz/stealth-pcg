@@ -149,11 +149,7 @@ public static class Verifier
             }
         }
 
-        //Debug.Log("# of surveilled tiles: " + surveilledTiles.Count);
-        //Debug.Log("# of graph nodes: " + graph.GetNodes().Length);
-        //Debug.Log("# of total tiles: " + map.N * map.M);
-        //Debug.Log("# of total tiles - # of surveilled tiles: " + (map.N * map.M - surveilledTiles.Count));
-        Debug.Log(graph);
+        //Debug.Log(graph);
 
         Edge[] aStarResult = AStar.Solve(graph, startNode, goalNode, Heuristics.EuclideanEstimator);
 
@@ -166,8 +162,6 @@ public static class Verifier
             trivialPositions.Add(e.From.Description);
 
         trivialPositions.Remove(aStarResult[0].From.Description);
-
-        Debug.Log("Trivial positions: " + trivialPositions);
 
         return true;
     }
