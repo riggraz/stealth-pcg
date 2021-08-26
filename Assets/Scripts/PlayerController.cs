@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public float speed;
-    public Text levelStatusText;
     public GameController gameController;
 
     private Map map;
