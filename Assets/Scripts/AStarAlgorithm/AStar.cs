@@ -23,6 +23,8 @@ public static class AStar
         visited = new List<Node>();
         unvisited = new List<Node>(g.GetNodes());
 
+        if (!unvisited.Contains(start) || !unvisited.Contains(goal)) return null;
+
         // Set tentative distance for all nodes
         status = new Dictionary<Node, NodeExtension>();
         foreach(Node n in unvisited)
