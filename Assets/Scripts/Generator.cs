@@ -75,7 +75,6 @@ public class Generator : MonoBehaviour
             new Rotating90EnemyFactory(),
             new Rotating360EnemyFactory(),
             new PatrolingEnemyFactory(),
-            new PatrolingEnemyFactory(),
         };
 
         int nOfEnemies = Mathf.FloorToInt(map.M * map.N / 15f) + Random.Range(-map.N / 4, map.N / 4 + 1) + 1;
