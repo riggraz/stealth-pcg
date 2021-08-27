@@ -13,8 +13,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         gameController = FindObjectOfType<GameController>();
-
-        AlignCameraToMap();
     }
 
     void FixedUpdate()
@@ -46,24 +44,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void AlignCameraToMap()
-    {
-        Vector3 mcPosition = Camera.main.transform.position;
-        mcPosition = new Vector3(map.N / 2 - 0.5f, mcPosition.y, mcPosition.z);
-        Camera.main.transform.position = mcPosition;
-    }
-
     private void AlignCameraToPlayer()
     {
         Vector3 cPosition = Camera.main.transform.position;
-        cPosition = new Vector3(cPosition.x, cPosition.y, transform.position.z - 6);
+        cPosition = new Vector3(map.N / 2 - 0.5f, cPosition.y, transform.position.z - 6);
 
         Quaternion cRotation = Quaternion.Euler(45f, 0f, 0f);
         
 
         if (Input.GetKey(KeyCode.Space))
         {
-            cPosition = new Vector3(cPosition.x, cPosition.y, transform.position.z);
+            cPosition = new Vector3(transform.position.x, cPosition.y, transform.position.z);
             cRotation = Quaternion.Euler(90f, 0f, 0f);
         }
 
