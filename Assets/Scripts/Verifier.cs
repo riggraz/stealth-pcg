@@ -4,6 +4,7 @@ using UnityEngine;
 public static class Verifier
 {
     public static int MAX_ITERATION_COUNT = 100;
+    static float sqrt2 = Mathf.Sqrt(2f);
 
     public static Map map;
 
@@ -70,17 +71,23 @@ public static class Verifier
         HashSet<Vector2Int> surveilledTiles
         )
     {
+        if (Mathf.FloorToInt(walkableDistance) <= 0) return;
         if (p.x < 0 || p.y < 0 || p.x >= map.N || p.y >= map.M) return;
         if (surveilledTiles.Contains(p)) return;
 
         newPositions.Add(p);
 
-        if (Mathf.FloorToInt(walkableDistance) <= 0) return;
-
+        // 4-way flood-fill
         EvolvePlayer(new Vector2Int(p.x, p.y - 1), walkableDistance - 1, newPositions, surveilledTiles);
         EvolvePlayer(new Vector2Int(p.x - 1, p.y), walkableDistance - 1, newPositions, surveilledTiles);
         EvolvePlayer(new Vector2Int(p.x, p.y + 1), walkableDistance - 1, newPositions, surveilledTiles);
         EvolvePlayer(new Vector2Int(p.x + 1, p.y), walkableDistance - 1, newPositions, surveilledTiles);
+
+        // 8-way flood-fill
+        //EvolvePlayer(new Vector2Int(p.x - 1, p.y - 1), walkableDistance - sqrt2, newPositions, surveilledTiles);
+        //EvolvePlayer(new Vector2Int(p.x - 1, p.y + 1), walkableDistance - sqrt2, newPositions, surveilledTiles);
+        //EvolvePlayer(new Vector2Int(p.x + 1, p.y + 1), walkableDistance - sqrt2, newPositions, surveilledTiles);
+        //EvolvePlayer(new Vector2Int(p.x + 1, p.y + 1), walkableDistance - sqrt2, newPositions, surveilledTiles);
     }
 
     public static HashSet<Vector2Int> trivialPositions;
