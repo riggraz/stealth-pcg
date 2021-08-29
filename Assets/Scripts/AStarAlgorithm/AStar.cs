@@ -4,7 +4,7 @@ public delegate float HeuristicFunction(Node from, Node to);
 
 public static class AStar
 {
-    public static bool immediateStop = false;
+    public static bool immediateStop = true;
 
     public static List<Node> visited;
     public static List<Node> unvisited;

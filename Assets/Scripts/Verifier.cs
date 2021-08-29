@@ -158,7 +158,7 @@ public static class Verifier
 
         //Debug.Log(graph);
 
-        Edge[] aStarResult = AStar.Solve(graph, startNode, goalNode, Heuristics.EuclideanEstimator);
+        Edge[] aStarResult = AStar.Solve(graph, startNode, goalNode, Heuristics.DiagonalEstimator);
 
         // No path available => level non trivial
         if (aStarResult == null) return false;
